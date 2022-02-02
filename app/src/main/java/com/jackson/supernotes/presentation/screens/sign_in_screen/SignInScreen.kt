@@ -47,11 +47,15 @@ fun SignInScreen(
     LaunchedEffect(true){
         viewModel.uiEvent.collect { event ->
             when (event) {
-                is UiEvent.NavigateTo -> {
+                is UiEvent.NavigateToClearBackStack -> {
                     keyboardController?.hide()
                     navController.navigate(event.route){
                         popUpTo(0)
                     }
+                }
+                is UiEvent.NavigateTo -> {
+                    keyboardController?.hide()
+                    navController.navigate(event.route)
                 }
                 is UiEvent.ShowSnackBar -> {
                     scaffoldState.snackbarHostState.showSnackbar(
@@ -156,7 +160,7 @@ fun SignInScreen(
                     text = "Don't have an account?"
                 )
                 TextButton(
-                    onClick = { /*TODO*/ },
+                    onClick = { viewModel.onEvent(SignInEvents.OnSignUpButtonPressed) },
                     enabled = fieldState
                 ) {
                     Text(

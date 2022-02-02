@@ -48,6 +48,9 @@ class SignInViewModel: ViewModel() {
                     signIn()
                 }
             }
+            is SignInEvents.OnSignUpButtonPressed -> {
+                viewModelScope.launch { sendUiEvent(UiEvent.NavigateTo(Routes.SIGN_UP_SCREEN)) }
+            }
         }
     }
 
@@ -60,7 +63,7 @@ class SignInViewModel: ViewModel() {
         val result = authRepository.signIn(email, password)
         when(result){
             is OperationState.Done -> {
-                sendUiEvent(UiEvent.NavigateTo(Routes.HOME_SCREEN))
+                sendUiEvent(UiEvent.NavigateToClearBackStack(Routes.HOME_SCREEN))
             }
             is OperationState.Error -> {
                 sendUiEvent(UiEvent.ShowSnackBar(message = result.error))
