@@ -5,9 +5,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jackson.supernotes.data.model.User
+import com.jackson.supernotes.data.repository.FirebaseAuthRepository
 import com.jackson.supernotes.presentation.navigation.Routes
 import com.jackson.supernotes.presentation.screens.sign_in_screen.SignInEvents
 import com.jackson.supernotes.presentation.screens.sign_in_screen.SignInScreenState
+import com.jackson.supernotes.utils.constants.AuthOperationState
 import com.jackson.supernotes.utils.helpers.UiEvent
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -34,6 +37,8 @@ class SignUpViewModel: ViewModel() {
     var uiState by mutableStateOf<SignUpScreenState>(SignUpScreenState.Normal)
         private set
 
+    private val authRepository = FirebaseAuthRepository()
+
     fun onEvent(event: SignUpEvents){
         when (event) {
             is SignUpEvents.OnEmailChanged -> {
@@ -59,10 +64,20 @@ class SignUpViewModel: ViewModel() {
             }
             is SignUpEvents.OnSignUpButtonPressed -> {
                 viewModelScope.launch {
-                    val result = validateFields()
-                    if(result){
-                        showSnackBarMessage("Successful")
+                    val validationResult = validateFields()
+                    if(!validationResult) return@launch
+                    uiState = SignUpScreenState.Loading
+                    val result = signUp()
+                    when (result) {
+                        is AuthOperationState.Done -> {
+                            sendUiEvent(UiEvent.NavigateToClearBackStack(Routes.HOME_SCREEN))
+                        }
+                        is AuthOperationState.Error -> {
+                            showSnackBarMessage(result.error)
+                        }
+                        else -> Unit
                     }
+                    uiState = SignUpScreenState.Normal
                 }
             }
             is SignUpEvents.OnSignInButtonPressed -> {
@@ -70,6 +85,19 @@ class SignUpViewModel: ViewModel() {
             }
             else -> Unit
         }
+    }
+
+    private suspend fun signUp(): AuthOperationState{
+        val user = User(
+            firstName = firstName,
+            lastName = lastName,
+            phoneNumber = phoneNumber,
+            address = address,
+            email = email,
+            password = password,
+            uid = ""
+        )
+        return authRepository.signUp(user)
     }
 
     private suspend fun validateFields(): Boolean{

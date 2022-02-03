@@ -6,13 +6,12 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jackson.supernotes.presentation.navigation.Routes
-import com.jackson.supernotes.repository.FirebaseAuthRepository
-import com.jackson.supernotes.utils.constants.OperationState
+import com.jackson.supernotes.data.repository.FirebaseAuthRepository
+import com.jackson.supernotes.utils.constants.AuthOperationState
 import com.jackson.supernotes.utils.helpers.UiEvent
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import kotlin.math.sign
 
 class SignInViewModel: ViewModel() {
 
@@ -62,10 +61,10 @@ class SignInViewModel: ViewModel() {
         uiState = SignInScreenState.Loading
         val result = authRepository.signIn(email, password)
         when(result){
-            is OperationState.Done -> {
+            is AuthOperationState.Done -> {
                 sendUiEvent(UiEvent.NavigateToClearBackStack(Routes.HOME_SCREEN))
             }
-            is OperationState.Error -> {
+            is AuthOperationState.Error -> {
                 sendUiEvent(UiEvent.ShowSnackBar(message = result.error))
             }
             else -> Unit

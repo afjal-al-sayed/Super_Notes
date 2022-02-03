@@ -4,14 +4,13 @@ import android.os.Bundle
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.jackson.supernotes.presentation.navigation.Routes
 import com.jackson.supernotes.presentation.screens.home_screen.HomeScreen
-import com.jackson.supernotes.repository.FirebaseAuthRepository
+import com.jackson.supernotes.data.repository.FirebaseAuthRepository
 import com.jackson.supernotes.presentation.screens.sign_in_screen.SignInScreen
 import com.jackson.supernotes.presentation.screens.sign_up_screen.SignUpScreen
 import com.jackson.supernotes.ui.theme.SuperNotesTheme

@@ -11,10 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHost
 import androidx.navigation.NavHostController
-import com.jackson.supernotes.repository.FirebaseAuthRepository
-import com.jackson.supernotes.utils.constants.AuthState
 import com.jackson.supernotes.utils.helpers.UiEvent
 import kotlinx.coroutines.flow.collect
 
@@ -27,7 +24,7 @@ fun HomeScreen(
     LaunchedEffect(true){
         viewModel.uiEvent.collect { event ->
             when (event) {
-                is UiEvent.NavigateTo -> {
+                is UiEvent.NavigateToClearBackStack -> {
                     navController.navigate(event.route){
                         popUpTo(0)
                     }
