@@ -32,7 +32,7 @@ class MainActivity : ComponentActivity() {
             SuperNotesTheme {
                 NavHost(
                     navController = navController,
-                    startDestination = if(isUserSignedIn) Routes.HOME_SCREEN else Routes.SIGN_IN_SCREEN
+                    startDestination = if(isUserSignedIn) Routes.HOME_SCREEN else Routes.SIGN_UP_SCREEN
                 ){
                     composable(route = Routes.SIGN_IN_SCREEN){
                         SignInScreen(navController = navController)
