@@ -1,10 +1,12 @@
 package com.jackson.supernotes.presentation.screens.sign_up_screen
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -15,13 +17,16 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -30,12 +35,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.jackson.supernotes.R
 import com.jackson.supernotes.presentation.components.AdditionalSignInUpButtonSection
 import com.jackson.supernotes.presentation.components.SignInUpButton
+import com.jackson.supernotes.presentation.components.SignUpInputField
 import com.jackson.supernotes.presentation.screens.sign_in_screen.SignInEvents
 import com.jackson.supernotes.presentation.screens.sign_in_screen.SignInScreenState
 import com.jackson.supernotes.utils.helpers.UiEvent
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 @ExperimentalComposeUiApi
 @Composable
@@ -50,6 +59,9 @@ fun SignUpScreen(
     val scaffoldState = rememberScaffoldState()
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
+    val bannerImage = painterResource(id = R.drawable.ic_sign_up_banner)
+    val listState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(true){
         viewModel.uiEvent.collect { event ->
@@ -88,151 +100,109 @@ fun SignUpScreen(
     ) {
         LazyColumn(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            contentPadding = PaddingValues(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            contentPadding = PaddingValues(horizontal = 24.dp, vertical = 24.dp),
+            state = listState,
             modifier = Modifier
                 .fillMaxSize(),
         ) {
-            item {
-                OutlinedTextField(
-                    value = viewModel.firstName,
-                    onValueChange = { viewModel.onEvent(SignUpEvents.OnFirstNameChanged(it)) },
+            item{
+                Image(
+                    painter = bannerImage,
+                    contentDescription = "Sign up banner image",
                     modifier = Modifier
-                        .fillMaxWidth(),
-                    label = {
-                        Text(text = "First name")
-                    },
-                    shape = RoundedCornerShape(cornerRoundness),
-                    //                leadingIcon = { Icon(Icons.Default.Email, "E-mail icon") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next),
-                    keyboardActions = KeyboardActions(
-                        onNext = { focusManager.moveFocus(FocusDirection.Down) }
-                    ),
-                    singleLine = true,
-                    enabled = fieldState
+                        .fillMaxWidth()
+                        .padding(horizontal = 64.dp, vertical = 16.dp)
                 )
             }
-            item {
-                OutlinedTextField(
-                    value = viewModel.lastName,
-                    onValueChange = { viewModel.onEvent(SignUpEvents.OnLastNameChanged(it)) },
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    label = {
-                        Text(text = "Last name")
-                    },
-                    shape = RoundedCornerShape(cornerRoundness),
-                    //                leadingIcon = { Icon(Icons.Default.Email, "E-mail icon") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next),
-                    keyboardActions = KeyboardActions(
-                        onNext = { focusManager.moveFocus(FocusDirection.Down) }
-                    ),
-                    singleLine = true,
-                    enabled = fieldState
-                )
-            }
-            item {
-                OutlinedTextField(
-                    value = viewModel.phoneNumber,
-                    onValueChange = { viewModel.onEvent(SignUpEvents.OnPhoneNumberChanged(it)) },
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    label = {
-                        Text(text = "Mobile number")
-                    },
-                    shape = RoundedCornerShape(cornerRoundness),
-                    //                leadingIcon = { Icon(Icons.Default.Email, "E-mail icon") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone, imeAction = ImeAction.Next),
-                    keyboardActions = KeyboardActions(
-                        onNext = { focusManager.moveFocus(FocusDirection.Down) }
-                    ),
-                    singleLine = true,
-                    enabled = fieldState
-                )
-            }
-            item {
-                OutlinedTextField(
-                    value = viewModel.address,
-                    onValueChange = { viewModel.onEvent(SignUpEvents.OnAddressChanged(it)) },
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    label = {
-                        Text(text = "Address")
-                    },
-                    shape = RoundedCornerShape(cornerRoundness),
-                    //                leadingIcon = { Icon(Icons.Default.Email, "E-mail icon") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next),
-                    keyboardActions = KeyboardActions(
-                        onNext = { focusManager.moveFocus(FocusDirection.Down) }
-                    ),
-                    singleLine = true,
-                    enabled = fieldState
-                )
-            }
-            item {
-                OutlinedTextField(
-                    value = viewModel.email,
-                    onValueChange = { viewModel.onEvent(SignUpEvents.OnEmailChanged(it)) },
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    label = {
-                        Text(text = "E-mail")
-                    },
-                    shape = RoundedCornerShape(cornerRoundness),
-                    //                leadingIcon = { Icon(Icons.Default.Email, "E-mail icon") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),
-                    keyboardActions = KeyboardActions(
-                        onNext = { focusManager.moveFocus(FocusDirection.Down) }
-                    ),
-                    singleLine = true,
-                    enabled = fieldState,
-                )
-
-            }
-            item {
-                OutlinedTextField(
-                    value = viewModel.password,
-                    onValueChange = { viewModel.onEvent(SignUpEvents.OnPasswordChanged(it)) },
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    label = {
-                        Text(text = "Password")
-                    },
-                    shape = RoundedCornerShape(cornerRoundness),
-                    //                leadingIcon = { Icon(Icons.Default.Email, "E-mail icon") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Next),
-                    keyboardActions = KeyboardActions(
-                        onNext = { focusManager.moveFocus(FocusDirection.Down) }
-                    ),
-                    visualTransformation = PasswordVisualTransformation(),
-                    singleLine = true,
-                    enabled = fieldState
-                )
-            }
-            item {
-                OutlinedTextField(
-                    value = viewModel.repeatPassword,
-                    onValueChange = { viewModel.onEvent(SignUpEvents.OnRepeatChanged(it)) },
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    label = {
-                        Text(text = "Repeat Password")
-                    },
-                    shape = RoundedCornerShape(cornerRoundness),
-                    //                leadingIcon = { Icon(Icons.Default.Email, "E-mail icon") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
-                    keyboardActions = KeyboardActions(
-                        onDone = { focusManager.clearFocus() }
-                    ),
-                    visualTransformation = PasswordVisualTransformation(),
-                    singleLine = true,
-                    enabled = fieldState
-                )
-            }
+            SignUpInputField(
+                value = viewModel.firstName,
+                onValueChange = { viewModel.onEvent(SignUpEvents.OnFirstNameChanged(it)) },
+                fieldOrder = 2,
+                label = "First name",
+                cornerRoundness = cornerRoundness,
+                isEnabled = fieldState,
+                coroutineScope = coroutineScope,
+                listState = listState,
+                focusManager = focusManager,
+            )
+            SignUpInputField(
+                value = viewModel.lastName,
+                onValueChange = { viewModel.onEvent(SignUpEvents.OnLastNameChanged(it)) },
+                fieldOrder = 3,
+                label = "Last name",
+                cornerRoundness = cornerRoundness,
+                isEnabled = fieldState,
+                coroutineScope = coroutineScope,
+                listState = listState,
+                focusManager = focusManager,
+            )
+            SignUpInputField(
+                value = viewModel.phoneNumber,
+                onValueChange = { viewModel.onEvent(SignUpEvents.OnPhoneNumberChanged(it)) },
+                fieldOrder = 4,
+                label = "Mobile number",
+                cornerRoundness = cornerRoundness,
+                isEnabled = fieldState,
+                coroutineScope = coroutineScope,
+                listState = listState,
+                focusManager = focusManager,
+                keyboardType = KeyboardType.Phone
+            )
+            SignUpInputField(
+                value = viewModel.address,
+                onValueChange = { viewModel.onEvent(SignUpEvents.OnAddressChanged(it)) },
+                fieldOrder = 5,
+                label = "Address",
+                cornerRoundness = cornerRoundness,
+                isEnabled = fieldState,
+                coroutineScope = coroutineScope,
+                listState = listState,
+                focusManager = focusManager
+            )
+            SignUpInputField(
+                value = viewModel.email,
+                onValueChange = { viewModel.onEvent(SignUpEvents.OnEmailChanged(it)) },
+                fieldOrder = 6,
+                label = "E-mail",
+                cornerRoundness = cornerRoundness,
+                isEnabled = fieldState,
+                coroutineScope = coroutineScope,
+                listState = listState,
+                focusManager = focusManager,
+                keyboardType = KeyboardType.Email
+            )
+            SignUpInputField(
+                value = viewModel.password,
+                onValueChange = { viewModel.onEvent(SignUpEvents.OnPasswordChanged(it)) },
+                fieldOrder = 7,
+                label = "Password",
+                cornerRoundness = cornerRoundness,
+                isEnabled = fieldState,
+                coroutineScope = coroutineScope,
+                listState = listState,
+                focusManager = focusManager,
+                keyboardType = KeyboardType.Password,
+                isPassword = true
+            )
+            SignUpInputField(
+                value = viewModel.repeatPassword,
+                onValueChange = { viewModel.onEvent(SignUpEvents.OnRepeatChanged(it)) },
+                fieldOrder = 8,
+                label = "Repeat Password",
+                cornerRoundness = cornerRoundness,
+                isEnabled = fieldState,
+                coroutineScope = coroutineScope,
+                listState = listState,
+                focusManager = focusManager,
+                keyboardType = KeyboardType.Password,
+                isPassword = true,
+                imeAction = ImeAction.Done
+            )
             item{
                 Spacer(Modifier.height(8.dp))
                 SignInUpButton(
-                    normalText = "Sign up",
+                    normalText = "Create account",
                     loadingText = "Signing up",
                     isEnabled = fieldState,
                     isLoading = uiState == SignUpScreenState.Loading,

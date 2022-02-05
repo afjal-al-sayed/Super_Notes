@@ -1,6 +1,10 @@
 package com.jackson.supernotes.presentation.screens.sign_in_screen
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -12,10 +16,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -24,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.jackson.supernotes.R
 import com.jackson.supernotes.presentation.components.AdditionalSignInUpButtonSection
 import com.jackson.supernotes.presentation.components.SignInUpButton
 import com.jackson.supernotes.utils.helpers.UiEvent
@@ -37,11 +45,12 @@ fun SignInScreen(
 ) {
 
     val cornerRoundness = 12.dp
-    val passwordFieldFocusRequester = remember{ FocusRequester() }
+    val focusManager = LocalFocusManager.current
     val uiState = viewModel.uiState
     val fieldState = uiState == SignInScreenState.Normal
     val scaffoldState = rememberScaffoldState()
     val keyboardController = LocalSoftwareKeyboardController.current
+    val logoPainter = painterResource(id = R.drawable.ic_logo_main)
 
     LaunchedEffect(true){
         viewModel.uiEvent.collect { event ->
@@ -79,10 +88,17 @@ fun SignInScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp),
+                .padding(vertical = 16.dp, horizontal = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
+            Image(
+                painter = logoPainter,
+                contentDescription = "Super notes logo",
+                modifier = Modifier
+                    .size(164.dp)
+            )
+            Spacer(Modifier.height(16.dp))
             OutlinedTextField(
                 value = viewModel.email,
                 onValueChange = { viewModel.onEvent(SignInEvents.OnEmailChanged(it)) },
@@ -96,7 +112,7 @@ fun SignInScreen(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),
                 singleLine = true,
                 keyboardActions = KeyboardActions(
-                    onNext = { passwordFieldFocusRequester.requestFocus() }
+                    onNext = { focusManager.moveFocus(FocusDirection.Down) }
                 ),
                 enabled = fieldState
             )
@@ -105,19 +121,23 @@ fun SignInScreen(
                 value = viewModel.password,
                 onValueChange = { viewModel.onEvent(SignInEvents.OnPasswordChanged(it)) },
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .focusRequester(passwordFieldFocusRequester),
+                    .fillMaxWidth(),
                 label = {
                     Text(text = "Password")
                 },
                 shape = RoundedCornerShape(cornerRoundness),
                 leadingIcon = { Icon(Icons.Default.Lock, "Password icon") },
                 visualTransformation = PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        focusManager.clearFocus()
+                    }
+                ),
                 singleLine = true,
                 enabled = fieldState
             )
-            Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(20.dp))
             SignInUpButton(
                 normalText = "Sign in",
                 loadingText = "Signing in",
@@ -126,36 +146,6 @@ fun SignInScreen(
                 onClick = { viewModel.onEvent(SignInEvents.OnSignInButtonPressed) },
                 cornerRoundness = cornerRoundness
             )
-            /*Button(
-                onClick = { viewModel.onEvent(SignInEvents.OnSignInButtonPressed) },
-                modifier = Modifier
-                    .fillMaxWidth(),
-                shape = RoundedCornerShape(cornerRoundness),
-                enabled = fieldState,
-                colors = ButtonDefaults.buttonColors(
-                    disabledBackgroundColor = MaterialTheme.colors.primary,
-                    disabledContentColor = contentColorFor(MaterialTheme.colors.primary)
-                )
-            ) {
-                Text(
-                    text = if(uiState == SignInScreenState.Loading) "Signing in" else "Sign in",
-                    modifier = Modifier
-                        .padding(vertical = 4.dp),
-                    style = TextStyle(
-                        fontSize = 18.sp
-                    ),
-                )
-                if(uiState == SignInScreenState.Loading){
-                    Spacer(modifier = Modifier.width(8.dp))
-                    CircularProgressIndicator(
-                        color = contentColorFor(MaterialTheme.colors.primary),
-                        modifier = Modifier
-                            .size(36.dp)
-                            .padding(4.dp),
-                        strokeWidth = 3.dp
-                    )
-                }
-            }*/
             Spacer(Modifier.height(8.dp))
             AdditionalSignInUpButtonSection(
                 message = "Don't have an account?",
@@ -163,24 +153,7 @@ fun SignInScreen(
                 onClick = { viewModel.onEvent(SignInEvents.OnSignUpButtonPressed) },
                 isEnabled = fieldState
             )
-            /*Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ){
-                Text(
-                    text = "Don't have an account?"
-                )
-                TextButton(
-                    onClick = { viewModel.onEvent(SignInEvents.OnSignUpButtonPressed) },
-                    enabled = fieldState
-                ) {
-                    Text(
-                        text = "Register here!"
-                    )
-                }
-            }*/
+            Spacer(Modifier.height(96.dp))
         }
     }
 }
