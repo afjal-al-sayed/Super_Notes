@@ -1,23 +1,29 @@
 package com.jackson.supernotes.presentation.screens.sign_up_screen
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
@@ -41,17 +47,20 @@ fun SignUpScreen(
     val fieldState = uiState == SignUpScreenState.Normal
     val scaffoldState = rememberScaffoldState()
     val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
 
     LaunchedEffect(true){
         viewModel.uiEvent.collect { event ->
             when (event) {
                 is UiEvent.NavigateToClearBackStack -> {
+                    focusManager.clearFocus()
                     keyboardController?.hide()
                     navController.navigate(event.route){
                         popUpTo(0)
                     }
                 }
                 is UiEvent.NavigateTo -> {
+                    focusManager.clearFocus()
                     keyboardController?.hide()
                     navController.navigate(event.route)
                 }
@@ -93,7 +102,10 @@ fun SignUpScreen(
                     },
                     shape = RoundedCornerShape(cornerRoundness),
                     //                leadingIcon = { Icon(Icons.Default.Email, "E-mail icon") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next),
+                    keyboardActions = KeyboardActions(
+                        onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                    ),
                     singleLine = true,
                     enabled = fieldState
                 )
@@ -109,7 +121,10 @@ fun SignUpScreen(
                     },
                     shape = RoundedCornerShape(cornerRoundness),
                     //                leadingIcon = { Icon(Icons.Default.Email, "E-mail icon") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next),
+                    keyboardActions = KeyboardActions(
+                        onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                    ),
                     singleLine = true,
                     enabled = fieldState
                 )
@@ -125,7 +140,10 @@ fun SignUpScreen(
                     },
                     shape = RoundedCornerShape(cornerRoundness),
                     //                leadingIcon = { Icon(Icons.Default.Email, "E-mail icon") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone, imeAction = ImeAction.Next),
+                    keyboardActions = KeyboardActions(
+                        onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                    ),
                     singleLine = true,
                     enabled = fieldState
                 )
@@ -141,7 +159,10 @@ fun SignUpScreen(
                     },
                     shape = RoundedCornerShape(cornerRoundness),
                     //                leadingIcon = { Icon(Icons.Default.Email, "E-mail icon") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next),
+                    keyboardActions = KeyboardActions(
+                        onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                    ),
                     singleLine = true,
                     enabled = fieldState
                 )
@@ -157,7 +178,10 @@ fun SignUpScreen(
                     },
                     shape = RoundedCornerShape(cornerRoundness),
                     //                leadingIcon = { Icon(Icons.Default.Email, "E-mail icon") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),
+                    keyboardActions = KeyboardActions(
+                        onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                    ),
                     singleLine = true,
                     enabled = fieldState,
                 )
@@ -174,7 +198,10 @@ fun SignUpScreen(
                     },
                     shape = RoundedCornerShape(cornerRoundness),
                     //                leadingIcon = { Icon(Icons.Default.Email, "E-mail icon") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Next),
+                    keyboardActions = KeyboardActions(
+                        onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                    ),
                     visualTransformation = PasswordVisualTransformation(),
                     singleLine = true,
                     enabled = fieldState
@@ -191,7 +218,10 @@ fun SignUpScreen(
                     },
                     shape = RoundedCornerShape(cornerRoundness),
                     //                leadingIcon = { Icon(Icons.Default.Email, "E-mail icon") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(
+                        onDone = { focusManager.clearFocus() }
+                    ),
                     visualTransformation = PasswordVisualTransformation(),
                     singleLine = true,
                     enabled = fieldState

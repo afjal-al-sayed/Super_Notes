@@ -1,4 +1,4 @@
-package com.jackson.supernotes.data.repository
+package com.jackson.supernotes.data.repository.auth
 
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -7,7 +7,7 @@ import com.jackson.supernotes.utils.constants.AuthOperationState
 import kotlinx.coroutines.tasks.await
 import java.lang.Exception
 
-class FirebaseFirestoreRepository {
+class FirebaseAuthFirestoreRepository {
 
     private val db = Firebase.firestore
     private val usersCollection = db.collection("super_notes_users")

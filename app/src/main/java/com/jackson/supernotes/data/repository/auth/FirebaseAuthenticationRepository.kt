@@ -1,17 +1,17 @@
-package com.jackson.supernotes.data.repository
+package com.jackson.supernotes.data.repository.auth
 
-import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.jackson.supernotes.data.model.User
 import com.jackson.supernotes.utils.constants.AuthOperationState
 import kotlinx.coroutines.tasks.await
 
-class FirebaseAuthRepository {
+class FirebaseAuthenticationRepository(
+    private val firestoreAuthRepository: FirebaseAuthFirestoreRepository
+) {
 
     private val TAG = "FirebaseAuthRepository"
 
     private val auth = FirebaseAuth.getInstance()
-    private val firestoreRepository = FirebaseFirestoreRepository()
     /*private val _authState = mutableStateOf<AuthState>(AuthState.SignedOut)
     val authState: State<AuthState> get() = _authState*/
 
@@ -45,7 +45,7 @@ class FirebaseAuthRepository {
             val result = auth.createUserWithEmailAndPassword(user.email, user.password).await()!!
             val createdUser = result.user!!
             val userWithUid = user.copy(uid = createdUser.uid)
-            val finalResult = firestoreRepository.saveUserData(userWithUid)
+            val finalResult = firestoreAuthRepository.saveUserData(userWithUid)
             finalResult
         } catch (e: Exception){
             AuthOperationState.Error(e.localizedMessage ?: "Unexpected error occurred")

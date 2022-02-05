@@ -6,17 +6,20 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jackson.supernotes.data.model.User
-import com.jackson.supernotes.data.repository.FirebaseAuthRepository
+import com.jackson.supernotes.data.repository.auth.FirebaseAuthenticationRepository
 import com.jackson.supernotes.presentation.navigation.Routes
-import com.jackson.supernotes.presentation.screens.sign_in_screen.SignInEvents
-import com.jackson.supernotes.presentation.screens.sign_in_screen.SignInScreenState
 import com.jackson.supernotes.utils.constants.AuthOperationState
 import com.jackson.supernotes.utils.helpers.UiEvent
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class SignUpViewModel: ViewModel() {
+@HiltViewModel
+class SignUpViewModel @Inject constructor(
+    private val authRepository: FirebaseAuthenticationRepository
+): ViewModel() {
 
     var email by mutableStateOf("test@gmail.com")
         private set
@@ -36,8 +39,6 @@ class SignUpViewModel: ViewModel() {
     val uiEvent = _uiEvent.receiveAsFlow()
     var uiState by mutableStateOf<SignUpScreenState>(SignUpScreenState.Normal)
         private set
-
-    private val authRepository = FirebaseAuthRepository()
 
     fun onEvent(event: SignUpEvents){
         when (event) {
