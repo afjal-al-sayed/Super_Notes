@@ -24,6 +24,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.jackson.supernotes.presentation.components.AdditionalSignInUpButtonSection
+import com.jackson.supernotes.presentation.components.SignInUpButton
 import com.jackson.supernotes.utils.helpers.UiEvent
 import kotlinx.coroutines.flow.collect
 
@@ -116,7 +118,15 @@ fun SignInScreen(
                 enabled = fieldState
             )
             Spacer(Modifier.height(16.dp))
-            Button(
+            SignInUpButton(
+                normalText = "Sign in",
+                loadingText = "Signing in",
+                isEnabled = fieldState,
+                isLoading = uiState == SignInScreenState.Loading,
+                onClick = { viewModel.onEvent(SignInEvents.OnSignInButtonPressed) },
+                cornerRoundness = cornerRoundness
+            )
+            /*Button(
                 onClick = { viewModel.onEvent(SignInEvents.OnSignInButtonPressed) },
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -138,16 +148,22 @@ fun SignInScreen(
                 if(uiState == SignInScreenState.Loading){
                     Spacer(modifier = Modifier.width(8.dp))
                     CircularProgressIndicator(
-                        color = Color.White,
+                        color = contentColorFor(MaterialTheme.colors.primary),
                         modifier = Modifier
                             .size(36.dp)
                             .padding(4.dp),
                         strokeWidth = 3.dp
                     )
                 }
-            }
+            }*/
             Spacer(Modifier.height(8.dp))
-            Row(
+            AdditionalSignInUpButtonSection(
+                message = "Don't have an account?",
+                buttonText = "Register here!",
+                onClick = { viewModel.onEvent(SignInEvents.OnSignUpButtonPressed) },
+                isEnabled = fieldState
+            )
+            /*Row(
                 modifier = Modifier
                     .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
@@ -164,7 +180,7 @@ fun SignInScreen(
                         text = "Register here!"
                     )
                 }
-            }
+            }*/
         }
     }
 }

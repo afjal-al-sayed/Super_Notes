@@ -30,6 +30,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.jackson.supernotes.presentation.components.AdditionalSignInUpButtonSection
+import com.jackson.supernotes.presentation.components.SignInUpButton
 import com.jackson.supernotes.presentation.screens.sign_in_screen.SignInEvents
 import com.jackson.supernotes.presentation.screens.sign_in_screen.SignInScreenState
 import com.jackson.supernotes.utils.helpers.UiEvent
@@ -229,7 +231,15 @@ fun SignUpScreen(
             }
             item{
                 Spacer(Modifier.height(8.dp))
-                Button(
+                SignInUpButton(
+                    normalText = "Sign up",
+                    loadingText = "Signing up",
+                    isEnabled = fieldState,
+                    isLoading = uiState == SignUpScreenState.Loading,
+                    onClick = { viewModel.onEvent(SignUpEvents.OnSignUpButtonPressed) },
+                    cornerRoundness = cornerRoundness
+                )
+                /*Button(
                     onClick = { viewModel.onEvent(SignUpEvents.OnSignUpButtonPressed) },
                     modifier = Modifier
                         .fillMaxWidth(),
@@ -251,17 +261,23 @@ fun SignUpScreen(
                     if(uiState == SignUpScreenState.Loading){
                         Spacer(modifier = Modifier.width(8.dp))
                         CircularProgressIndicator(
-                            color = Color.White,
+                            color = contentColorFor(MaterialTheme.colors.primary),
                             modifier = Modifier
                                 .size(36.dp)
                                 .padding(4.dp),
                             strokeWidth = 3.dp
                         )
                     }
-                }
+                }*/
             }
             item{
-                Row(
+                AdditionalSignInUpButtonSection(
+                    message = "Already registered?",
+                    buttonText = "Sign in instead",
+                    onClick = { viewModel.onEvent(SignUpEvents.OnSignInButtonPressed) },
+                    isEnabled = fieldState
+                )
+                /*Row(
                     modifier = Modifier
                         .fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
@@ -278,7 +294,7 @@ fun SignUpScreen(
                             text = "Sign in instead"
                         )
                     }
-                }
+                }*/
             }
         }
     }
