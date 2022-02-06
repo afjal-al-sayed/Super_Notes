@@ -1,5 +1,8 @@
 package com.jackson.supernotes.presentation.screens.sign_up_screen
 
+import android.content.Context
+import android.util.Log
+import android.view.inputmethod.InputMethodManager
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.Orientation
@@ -14,16 +17,15 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -209,36 +211,6 @@ fun SignUpScreen(
                     onClick = { viewModel.onEvent(SignUpEvents.OnSignUpButtonPressed) },
                     cornerRoundness = cornerRoundness
                 )
-                /*Button(
-                    onClick = { viewModel.onEvent(SignUpEvents.OnSignUpButtonPressed) },
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    shape = RoundedCornerShape(cornerRoundness),
-                    enabled = fieldState,
-                    colors = ButtonDefaults.buttonColors(
-                        disabledBackgroundColor = MaterialTheme.colors.primary,
-                        disabledContentColor = contentColorFor(MaterialTheme.colors.primary)
-                    )
-                ) {
-                    Text(
-                        text = if(uiState == SignUpScreenState.Loading) "Signing up" else "Sign Up",
-                        modifier = Modifier
-                            .padding(vertical = 4.dp),
-                        style = TextStyle(
-                            fontSize = 18.sp
-                        ),
-                    )
-                    if(uiState == SignUpScreenState.Loading){
-                        Spacer(modifier = Modifier.width(8.dp))
-                        CircularProgressIndicator(
-                            color = contentColorFor(MaterialTheme.colors.primary),
-                            modifier = Modifier
-                                .size(36.dp)
-                                .padding(4.dp),
-                            strokeWidth = 3.dp
-                        )
-                    }
-                }*/
             }
             item{
                 AdditionalSignInUpButtonSection(
@@ -247,24 +219,7 @@ fun SignUpScreen(
                     onClick = { viewModel.onEvent(SignUpEvents.OnSignInButtonPressed) },
                     isEnabled = fieldState
                 )
-                /*Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ){
-                    Text(
-                        text = "Already registered?"
-                    )
-                    TextButton(
-                        onClick = { viewModel.onEvent(SignUpEvents.OnSignInButtonPressed) },
-                        enabled = fieldState
-                    ) {
-                        Text(
-                            text = "Sign in instead"
-                        )
-                    }
-                }*/
+                Spacer(Modifier.height(196.dp))
             }
         }
     }
