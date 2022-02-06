@@ -30,9 +30,11 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -64,6 +66,7 @@ fun SignUpScreen(
     val bannerImage = painterResource(id = R.drawable.ic_sign_up_banner)
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
+    val firstFieldIndex = 2;
 
     LaunchedEffect(true){
         viewModel.uiEvent.collect { event ->
@@ -116,11 +119,29 @@ fun SignUpScreen(
                         .fillMaxWidth()
                         .padding(horizontal = 64.dp, vertical = 16.dp)
                 )
+                Text(
+                    text = "Create New Account",
+                    style = TextStyle(
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 24.sp,
+                        textAlign = TextAlign.Center
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                )
+                Text(
+                    text = "Please fill up the following form and click \"Create account\" to continue",
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+
+                )
             }
             SignUpInputField(
                 value = viewModel.firstName,
                 onValueChange = { viewModel.onEvent(SignUpEvents.OnFirstNameChanged(it)) },
-                fieldOrder = 2,
+                fieldOrder = firstFieldIndex,
                 label = "First name",
                 cornerRoundness = cornerRoundness,
                 isEnabled = fieldState,
@@ -131,7 +152,7 @@ fun SignUpScreen(
             SignUpInputField(
                 value = viewModel.lastName,
                 onValueChange = { viewModel.onEvent(SignUpEvents.OnLastNameChanged(it)) },
-                fieldOrder = 3,
+                fieldOrder = firstFieldIndex + 1,
                 label = "Last name",
                 cornerRoundness = cornerRoundness,
                 isEnabled = fieldState,
@@ -142,7 +163,7 @@ fun SignUpScreen(
             SignUpInputField(
                 value = viewModel.phoneNumber,
                 onValueChange = { viewModel.onEvent(SignUpEvents.OnPhoneNumberChanged(it)) },
-                fieldOrder = 4,
+                fieldOrder = firstFieldIndex + 2,
                 label = "Mobile number",
                 cornerRoundness = cornerRoundness,
                 isEnabled = fieldState,
@@ -154,7 +175,7 @@ fun SignUpScreen(
             SignUpInputField(
                 value = viewModel.address,
                 onValueChange = { viewModel.onEvent(SignUpEvents.OnAddressChanged(it)) },
-                fieldOrder = 5,
+                fieldOrder = firstFieldIndex + 3,
                 label = "Address",
                 cornerRoundness = cornerRoundness,
                 isEnabled = fieldState,
@@ -165,7 +186,7 @@ fun SignUpScreen(
             SignUpInputField(
                 value = viewModel.email,
                 onValueChange = { viewModel.onEvent(SignUpEvents.OnEmailChanged(it)) },
-                fieldOrder = 6,
+                fieldOrder = firstFieldIndex + 4,
                 label = "E-mail",
                 cornerRoundness = cornerRoundness,
                 isEnabled = fieldState,
@@ -177,7 +198,7 @@ fun SignUpScreen(
             SignUpInputField(
                 value = viewModel.password,
                 onValueChange = { viewModel.onEvent(SignUpEvents.OnPasswordChanged(it)) },
-                fieldOrder = 7,
+                fieldOrder = firstFieldIndex + 5,
                 label = "Password",
                 cornerRoundness = cornerRoundness,
                 isEnabled = fieldState,
@@ -190,7 +211,7 @@ fun SignUpScreen(
             SignUpInputField(
                 value = viewModel.repeatPassword,
                 onValueChange = { viewModel.onEvent(SignUpEvents.OnRepeatChanged(it)) },
-                fieldOrder = 8,
+                fieldOrder = firstFieldIndex + 6,
                 label = "Repeat Password",
                 cornerRoundness = cornerRoundness,
                 isEnabled = fieldState,
